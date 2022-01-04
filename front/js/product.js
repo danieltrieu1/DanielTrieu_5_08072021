@@ -7,10 +7,14 @@
 //-------------------------------------------------
 
 // Affichage de l'article la page produit
+// // Récupération du produit
 
-// Récupération du produit
-let params = new URLSearchParams(window.location.search); // .search pointe la partie de l'URL qui suit le symbol ?
-let itemId = params.get("id"); // qu'on récupère ici avec .get qu'on déclare dans une variable
+// .search pointe la partie de l'URL qui suit le symbol ?
+let params = new URLSearchParams(window.location.search); 
+
+// qu'on récupère ici avec .get qu'on déclare dans une variable
+let itemId = params.get("id");
+
 // console.log(itemId);
 
 // Initialisation des caractéristiques du produit
@@ -19,31 +23,43 @@ const itemTitle = document.getElementById("title");
 const itemPrice = document.getElementById("price");
 const itemDescription = document.getElementById("description");
 const itemColors = document.getElementById("colors");
-// console.log(itemColors); // Vérification de la sélection de chaque élément
 
-let imageURL = ""; // ajout de imageURL pour l'affiche dans le panier
+// Vérification de la sélection de chaque élément
+// console.log(itemColors); 
 
-// Requête pour récuperer le produit dans la base de données
+// Ajout d'une string vide pour l'affichage de l'image sur la page
+let imageURL = ""; 
+
+// Requête pour récupérer le produit dans la base de données
 fetch(`http://localhost:3000/api/products/${itemId}`)
-  // Rajout de itemId déclaré précédemment pour avoir le produit selectionné
+
+  // Rajout de itemId déclaré précédemment pour cibler et avoir le produit selectionné
   .then((response) => response.json()) 
   .then((data) => {
-    // console.log(data);
 
+  // console.log(data);
+
+    // Implémentation des éléments de la page dans le code HTML
     itemImage[0].innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`; 
     imageURL = data.imageUrl;
+        
+    // on met la valeur entre les crochets pour qu'il aille chercher la première valeur
+    // console.log(itemImage[0]);
     // console.log(imageURL);
-    // console.log(itemImage[0]); // on met la valeur entre les crochets pour qu'il aille chercher la première balise
 
     itemTitle.innerHTML = `<h1>${data.name}</h1>`;
     itemPrice.innerHTML = `${data.price}`;
     itemDescription.innerHTML = `${data.description}`;
 
-    for (select in data.colors) { // for/in puisque color dans la doc est de type array of string
+    // Boucle for/in puisque colors dans les données du produit est de type array of string
+    for (select in data.colors) { 
       colors.options[colors.options.length] = new Option(data.colors[select]);
-      // console.log(data.colors[couleur]);
+      
+      // console.log(data.colors[select]);
+
     }
   })
+  
   // Affichage des erreurs potentielles
   .catch((error) => {
     alert("Error");
@@ -60,78 +76,94 @@ const addToCart = document.getElementById("addToCart");
 addToCart.addEventListener("click", (event) => {
   event.preventDefault();
 
-  // Condition pour que le produit ne s'ajoute pas au panier si les critères ne sont pas remplis
+  // Si la quantité du produit est équivalente ou inféreur à 0 et supérieur à 100
   if (
     itemQuantity.value <= 0 ||
-    itemQuantity.value >= 100 ||
-    itemOptions.value == ""
+    itemQuantity.value > 100
   ) {
-    alert("Veuillez ajouter la quantité et l'option de votre produit");
+  alert("Désolé ! Veuillez ajouter une quantité comprise entre 0 et 100 !");
+  
+  // Si l'option de couleur n'a pas été selectionnée
+  } else if (itemOptions.value == "") {
+  alert("Désolé ! Veuillez d'abord choisir une couleur disponible !");
   } else {
-    // Récupération des valeurs du produit sélectionné
-    // // Déclaration de l'objet au sein du bouton
-    let selectedProduct = {
-      name: itemTitle.textContent,
-      id: itemId,
-      price: itemPrice.textContent,
-      color: itemOptions.value,
-      quantity: itemQuantity.value,
-      image: imageURL,
-    };
 
-    // console.log(selectedProduct); // Vérification des données du produit récupérées à l'écoute du bouton
+// Récupération des valeurs du produit sélectionné
+    
+  // Déclaration de l'objet contenant les caractéristiques du produit au sein du bouton 
+  let selectedProduct = {
+    name: itemTitle.textContent,
+    id: itemId,
+    price: itemPrice.textContent,
+    color: itemOptions.value,
+    quantity: itemQuantity.value,
+    image: imageURL,
+  };
 
-    //-------------------------------------------------
-    //---------------- LocalStorage -------------------
-    //-------------------------------------------------
-    // Initialisation du localStorage au sein du bouton
+// Vérification des données du produit récupérées à l'écoute du bouton
+// console.log(selectedProduct);
 
-    //   // Stockage des valeurs
+//-------------------------------------------------
+//---------------- LocalStorage -------------------
+//-------------------------------------------------
 
-    // Déclaration de la variable ou on va mettre les key et value
-    let productInLocalStorage = JSON.parse(localStorage.getItem("product")); // JSON.parse convertit les données JSON du local storage en objet Javascript
+// Initialisation du localStorage au sein du bouton
+// // Stockage des valeurs
 
-    //   // Vérification si il y a déjà le produit enregistré dans le local storage ou non
-    let addProductInLocalStorage = () => {
-      productInLocalStorage.push(selectedProduct); // Récupération des données dans un tableau avec la méthode .push
-      localStorage.setItem("product", JSON.stringify(productInLocalStorage)); // Création de la key 'product' avec la méthode .setItem // Utilisation de la méthode JSON.stringify pour convertir l'objet Javascript en données JSON
-    };
+  // Déclaration de la variable ou on va mettre les key et value
+  // JSON.parse convertit les données JSON du local storage en objet Javascript
+  let productInLocalStorage = JSON.parse(localStorage.getItem("product")); 
 
-    let itemAddedInCart = () => {
-      alert("Votre article a bien été ajouté dans le panier !");
-      // window.location.href = "cart.html"; // Facultatif
-    };
+  // Vérification si il y a déjà le produit enregistré dans le local storage ou non
+  let addProductInLocalStorage = () => {
+    // Récupération des données dans un tableau avec la méthode .push
+    productInLocalStorage.push(selectedProduct);
+    // Création de la key 'product' avec la méthode .setItem 
+    // Utilisation de la méthode JSON.stringify pour convertir l'objet Javascript en données JSON
+    localStorage.setItem("product", JSON.stringify(productInLocalStorage)); 
+  };
+
+  // Confirmation de l'ajout du produit au panier
+  let itemAddedInCart = () => {
+    alert("Votre article a bien été ajouté dans le panier !");
+
+    // Redirection Facultative vers la page panier
+    // window.location.href = "cart.html"; 
+  };
 
 //-------------------------------------------------
 
-console.log(productInLocalStorage);
+  // console.log(productInLocalStorage);
 
-    let update = false;
+  let update = false;
 
-    if (productInLocalStorage) { 
-      productInLocalStorage.forEach(function (productCheck, key) { 
-        if ( productCheck.id == itemId && productCheck.color == itemOptions.value ) {
-          productInLocalStorage[key].quantity =
-            parseInt(productCheck.quantity) + parseInt(itemQuantity.value);
-          localStorage.setItem(
-            "product",
-            JSON.stringify(productInLocalStorage)
-          );
+  if (productInLocalStorage) { 
+    productInLocalStorage.forEach(function (productCheck, key) { 
+        
+      if ( productCheck.id == itemId && productCheck.color == itemOptions.value ) {
+        
+        productInLocalStorage[key].quantity = parseInt(productCheck.quantity) + parseInt(itemQuantity.value);
+        
+        localStorage.setItem("product", JSON.stringify(productInLocalStorage));
 
-          update = true;
+        update = true;
 
-          itemAddedInCart();
-        }
-      });
-
-      if (!update) {
-        addProductInLocalStorage();
         itemAddedInCart();
       }
-    } else {
-      productInLocalStorage = []; // Je créer un tableau vide
-      addProductInLocalStorage(); // Je met dans ce tableau le contenu de mon selectedProduct
-      itemAddedInCart(); // Je créer la clé produit que je convertis en JSON pour le local storage
+    });
+
+    if (!update) {
+      addProductInLocalStorage();
+      itemAddedInCart();
+    }
+  
+  } else {
+      // Je créer un tableau vide
+      productInLocalStorage = []; 
+      // Je met dans ce tableau le contenu de mon selectedProduct
+      addProductInLocalStorage(); 
+      // Je créer la clé produit que je convertis en JSON pour le local storage
+      itemAddedInCart(); 
     }
   }
 });

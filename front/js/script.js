@@ -8,20 +8,28 @@
 
 // Requete API
 fetch('http://localhost:3000/api/products')
-    .then((response) => response.json()) // Récupération des données depuis l'API -> Traduction des données en objet JSON
-    .then((data) => { // Récupération des données converties pour l'affichage
-        showProducts(data)}) // Incrémentation des données récupérées au sein de la fonction showProducts
-        
-    .catch(error => { // Récupération des erreurs potentielles
+    // Récupération des données depuis l'API -> Traduction des données en objet JSON
+    .then((response) => response.json()) 
+    // Récupération des données converties pour l'affichage
+    .then((data) => { 
+        // Incrémentation des données récupérées au sein de la fonction showProducts
+        showProducts(data)}) 
+
+    // Récupération et affichage des erreurs potentielles   
+    .catch(error => { 
         alert('Error');
     });
 
 // Affichage des produits de la page    
 showProducts = (data) => {
-    
-    for ((products) of (data)) { // for of // Création d'une boucle permettant de parcourir le array contenant les produits
-        // console.log(data);
-    const items = document.getElementById("items");  // Ciblage de la balise pour implémenter le produit 
+
+    // for of // Création d'une boucle permettant de parcourir le array contenant les produits
+    for ((products) of (data)) { 
+
+    // console.log(data);
+
+    // Ciblage et incrémentation de la balise 'items' pour afficher les produits    
+    const items = document.getElementById("items");  
     items.innerHTML +=`
         <a href="./product.html?id=${products._id}"> 
             <article>
@@ -32,6 +40,7 @@ showProducts = (data) => {
         </a>
         `
     };
+
     // console.log(data);
 };
 
