@@ -6,8 +6,9 @@
 
 //-------------------------------------------------
 
-// Requete API
+// Requete API // Méthode Fetch
 fetch('http://localhost:3000/api/products')
+
     // Récupération des données depuis l'API -> Traduction des données en objet JSON
     .then((response) => response.json()) 
     // Récupération des données converties pour l'affichage
@@ -40,7 +41,7 @@ showProducts = (data) => {
         </a>
         `
     };
-
+       
     // console.log(data);
 };
 

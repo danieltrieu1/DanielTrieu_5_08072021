@@ -53,6 +53,7 @@ if (productInLocalStorage === null || productInLocalStorage == 0) {
 
     // Incrémentation du code à chaque tour de boucle pour chaque produit qui a été ajouté au panier
     productsCart =
+
     // Concaténation pour que le produit s'ajoute au tableau productsCart sans écraser le précédent 
       productsCart + 
       `  
@@ -114,11 +115,12 @@ if (productInLocalStorage === null || productInLocalStorage == 0) {
         );
 
         // Mise à jour du local storage avec les produits restants
-        // Traduiuction de l'objet javascript en chaine de caractère JSON
+        // Traduction de l'objet javascript en chaine de caractère JSON
         localStorage.setItem("product", JSON.stringify(productInLocalStorage)); 
 
         // Confirmation de la suppression du produit
         alert("Votre article a bien été retiré de votre panier !");
+
         // Rechargement de la page pour actualiser le contenu du panier
         window.location.href = "cart.html"; 
       });
@@ -168,6 +170,7 @@ if (productInLocalStorage === null || productInLocalStorage == 0) {
     let totalItems = 0;
 
     for (e in productInLocalStorage) {
+
       // Analyse et converti la valeur 'quantity' dans le localstorage en une chaîne, et renvoie un entier (parseInteger), sur la base décimale de 10 // Transforme la donnée string en donnée number
       const newQuantity = parseInt(productInLocalStorage[e].quantity, 10);
 
@@ -254,7 +257,7 @@ if (productInLocalStorage === null || productInLocalStorage == 0) {
           return true;
         } else {
           let firstNameErrorMsg = document.getElementById("firstNameErrorMsg");
-          firstNameErrorMsg.innerText = "Prénom invalide";
+          firstNameErrorMsg.innerHTML = "Prénom invalide";
         }
       };
 
@@ -266,7 +269,7 @@ if (productInLocalStorage === null || productInLocalStorage == 0) {
           return true;
         } else {
           let lastNameErrorMsg = document.getElementById("lastNameErrorMsg");
-          lastNameErrorMsg.innerText = "Nom invalide";
+          lastNameErrorMsg.innerHTML = "Nom invalide";
         }
       };
 
@@ -277,7 +280,7 @@ if (productInLocalStorage === null || productInLocalStorage == 0) {
           return true;
         } else {
           let addressErrorMsg = document.getElementById("addressErrorMsg");
-          addressErrorMsg.innerText = "Adresse invalide";
+          addressErrorMsg.innerHTML = "Adresse invalide";
         }
       };
 
@@ -288,7 +291,7 @@ if (productInLocalStorage === null || productInLocalStorage == 0) {
           return true;
         } else {
           let cityErrorMsg = document.getElementById("cityErrorMsg");
-          cityErrorMsg.innerText = "Ville invalide";
+          cityErrorMsg.innerHTML = "Ville invalide";
         }
       };
 
@@ -299,7 +302,7 @@ if (productInLocalStorage === null || productInLocalStorage == 0) {
           return true;
         } else {
           let emailErrorMsg = document.getElementById("emailErrorMsg");
-          emailErrorMsg.innerText = "Mail invalide";
+          emailErrorMsg.innerHTML = "Mail invalide";
         }
       };
 
@@ -352,7 +355,7 @@ if (productInLocalStorage === null || productInLocalStorage == 0) {
             document.location.href = `confirmation.html?id=${data.orderId}`;
           }
         });
-    }); // addeventlistener
+    }); // addeventlistener fin
   };
 
   form();

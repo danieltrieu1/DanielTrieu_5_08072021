@@ -31,9 +31,8 @@ const itemColors = document.getElementById("colors");
 let imageURL = ""; 
 
 // Requête pour récupérer le produit dans la base de données
+  // Rajout de 'itemId' déclaré précédemment pour cibler et avoir le produit selectionné
 fetch(`http://localhost:3000/api/products/${itemId}`)
-
-  // Rajout de itemId déclaré précédemment pour cibler et avoir le produit selectionné
   .then((response) => response.json()) 
   .then((data) => {
 
@@ -56,7 +55,6 @@ fetch(`http://localhost:3000/api/products/${itemId}`)
       colors.options[colors.options.length] = new Option(data.colors[select]);
       
       // console.log(data.colors[select]);
-
     }
   })
   
@@ -72,6 +70,8 @@ const itemOptions = document.getElementById("colors");
 // Ajouter de l'élément au panier
 const addToCart = document.getElementById("addToCart");
 
+//-------------------------------------------------
+
 // Écoute du bouton et envoie au panier
 addToCart.addEventListener("click", (event) => {
   event.preventDefault();
@@ -82,9 +82,9 @@ addToCart.addEventListener("click", (event) => {
     itemQuantity.value > 100
   ) {
   alert("Désolé ! Veuillez ajouter une quantité comprise entre 0 et 100 !");
-  
+  }
   // Si l'option de couleur n'a pas été selectionnée
-  } else if (itemOptions.value == "") {
+  else if (itemOptions.value == "") {
   alert("Désolé ! Veuillez d'abord choisir une couleur disponible !");
   } else {
 
@@ -116,8 +116,10 @@ addToCart.addEventListener("click", (event) => {
 
   // Vérification si il y a déjà le produit enregistré dans le local storage ou non
   let addProductInLocalStorage = () => {
+    
     // Récupération des données dans un tableau avec la méthode .push
     productInLocalStorage.push(selectedProduct);
+
     // Création de la key 'product' avec la méthode .setItem 
     // Utilisation de la méthode JSON.stringify pour convertir l'objet Javascript en données JSON
     localStorage.setItem("product", JSON.stringify(productInLocalStorage)); 
@@ -131,39 +133,63 @@ addToCart.addEventListener("click", (event) => {
     // window.location.href = "cart.html"; 
   };
 
+    console.log(productInLocalStorage);
+
 //-------------------------------------------------
-
-  // console.log(productInLocalStorage);
-
+  
+  // Vérification de l'ajout de produit avec une méthode booléenne
   let update = false;
 
+  // Si le produit est envoyé dans le local storage
   if (productInLocalStorage) { 
-    productInLocalStorage.forEach(function (productCheck, key) { 
-        
+
+    // Pour chaque produit ajouté
+    productInLocalStorage.forEach(function (productCheck, key) {
+
+      // Si le produit ajouté possède un 'id' et une option 'color' identique: la quantité est mise à jour
       if ( productCheck.id == itemId && productCheck.color == itemOptions.value ) {
         
         productInLocalStorage[key].quantity = parseInt(productCheck.quantity) + parseInt(itemQuantity.value);
-        
+
+        // Mise à jour des nouvelles valeurs du produit
         localStorage.setItem("product", JSON.stringify(productInLocalStorage));
 
+        // L'article ajouté est identique au produit présent dans le local storage
         update = true;
 
+        // Confirmation de l'ajout 
         itemAddedInCart();
       }
+
+      // console.log(productInLocalStorage); 
+
     });
 
+    // L'article ajouté est n'est pas identique au produit présent dans le local storage
+    // Si le produit possède une autre option 'color': le produit est ajouté séparemment
     if (!update) {
+
+      // Vérification du produit existant dans le local storage
       addProductInLocalStorage();
+
+      // Confirmation de l'ajout
       itemAddedInCart();
     }
-  
+
+    // L'article ajouté est n'est pas identique aux produits présent dans le local storage
+    // Si le produit possède un autre 'id' et une autre couleur: le produit est ajouté séparemment  
   } else {
+    
       // Je créer un tableau vide
       productInLocalStorage = []; 
-      // Je met dans ce tableau le contenu de mon selectedProduct
+
+      // Je met dans ce tableau le contenu de mon produit sélectionné
+      // Je créer la nouvelle clé produit que je convertis en JSON pour le local storage
       addProductInLocalStorage(); 
-      // Je créer la clé produit que je convertis en JSON pour le local storage
+
+      // Confirmation de l'ajout
       itemAddedInCart(); 
     }
   }
 });
+
